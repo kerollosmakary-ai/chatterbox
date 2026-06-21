@@ -6,6 +6,17 @@ val localUrl: String = providers.gradleProperty("STUDIO_LOCAL_URL")
     .orElse("http://192.168.1.100:7860")
     .get()
 
+val releaseKeystorePath = providers.gradleProperty("ANDROID_KEYSTORE_PATH").orNull
+val releaseKeystorePassword = providers.gradleProperty("ANDROID_KEYSTORE_PASSWORD").orNull
+val releaseKeyAlias = providers.gradleProperty("ANDROID_KEY_ALIAS").orNull
+val releaseKeyPassword = providers.gradleProperty("ANDROID_KEY_PASSWORD").orNull
+val hasReleaseSigning = listOf(
+    releaseKeystorePath,
+    releaseKeystorePassword,
+    releaseKeyAlias,
+    releaseKeyPassword
+).all { !it.isNullOrBlank() }
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -37,6 +48,11 @@ android {
         release {
             manifestPlaceholders["usesCleartextTraffic"] = "false"
             isMinifyEnabled = true
+            signingConfig = if (hasReleaseSigning) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -65,3 +81,13 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.10.1")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 }
+    signingConfigs {
+        create("release") {
+            if (hasReleaseSigning) {
+                storeFile = file(releaseKeystorePath!!)
+                storePassword = releaseKeystorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+            }
+        }
+    }

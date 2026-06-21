@@ -78,7 +78,8 @@ Output:
    - `ANDROID_KEYSTORE_PASSWORD`
    - `ANDROID_KEY_ALIAS`
    - `ANDROID_KEY_PASSWORD`
-2. Wire signing config in `app/build.gradle.kts` for release.
+2. Release signing is auto-wired in `app/build.gradle.kts` when these properties are present.
+   If they are missing, release build falls back to debug signing.
 3. Build:
 
 ```bash
