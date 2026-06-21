@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notebook Studio</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+
+<!-- ── Header ───────────────────────────────────────────────────────────── -->
+<header class="header">
+  <div class="logo">
+    <span class="logo-icon">📓</span>
+    <span class="logo-text">Notebook Studio</span>
+  </div>
+  <div class="header-actions">
+    <button class="btn-icon" onclick="openSettings()" title="Settings">⚙️</button>
+  </div>
+</header>
+
+<!-- ── App Layout ───────────────────────────────────────────────────────── -->
+<div class="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title-row">
+        <h2>Sources</h2>
+        <span class="source-counter" id="source-counter"></span>
+      </div>
+      <div class="source-actions">
+        <label class="btn-outline btn-sm" for="file-input" style="cursor:pointer">+ Upload</label>
+        <input type="file" id="file-input" accept=".pdf,.txt,.md,.docx" multiple hidden>
+        <button class="btn-outline btn-sm" onclick="openUrlDialog()">+ URL</button>
+      </div>
+    </div>
+    <div class="sources-list" id="sources-list">
+      <div class="empty-state">
+        <div class="empty-icon">📂</div>
+        <p>No sources yet</p>
+        <p class="hint">Upload files or add a URL</p>
+      </div>
+    </div>
+    <div class="sidebar-drop-hint">Drop files here to upload</div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Document section -->
+    <div class="doc-section card">
+      <div class="section-toolbar">
+        <div class="doc-tabs" role="tablist">
+          <button class="doc-tab active" data-type="summary"    role="tab">Summary</button>
+          <button class="doc-tab"        data-type="keypoints"  role="tab">Key Points</button>
+          <button class="doc-tab"        data-type="studyguide" role="tab">Study Guide</button>
+          <button class="doc-tab"        data-type="faq"        role="tab">FAQ</button>
+        </div>
+        <div class="toolbar-actions">
+          <button class="btn-icon btn-copy" id="copy-btn" onclick="copyContent()" title="Copy" style="display:none">📋</button>
+          <button class="btn-primary" id="generate-doc-btn" onclick="generateDocument()" disabled>
+            ✨ Generate
+          </button>
+        </div>
+      </div>
+      <div class="document-content" id="document-content">
+        <div class="empty-state">
+          <div class="empty-icon">✨</div>
+          <p>Select sources, then generate a document</p>
+          <p class="hint">Supports PDF, TXT, Markdown, and web URLs</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Podcast section -->
+    <div class="podcast-section card">
+      <div class="section-toolbar">
+        <h2 class="section-title">🎙️ Audio Overview</h2>
+        <button class="btn-primary" id="generate-podcast-btn" onclick="generatePodcast()" disabled>
+          Generate Podcast
+        </button>
+      </div>
+      <div class="podcast-area" id="podcast-area">
+        <p class="hint" style="padding:16px 20px">Generate an AI podcast conversation about your sources.</p>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ── Settings Modal ────────────────────────────────────────────────────── -->
+<div class="modal hidden" id="settings-modal">
+  <div class="modal-content">
+    <h2>⚙️ Settings</h2>
+
+    <div class="form-group">
+      <label for="settings-provider">LLM Provider</label>
+      <select class="form-control" id="settings-provider">
+        <option value="anthropic">Anthropic (Claude)</option>
+        <option value="openai">OpenAI (GPT)</option>
+        <option value="groq">Groq (Fast &amp; Free tier)</option>
+        <option value="openrouter">OpenRouter (multi-provider)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="settings-api-key">API Key</label>
+      <input type="password" class="form-control" id="settings-api-key"
+             placeholder="Paste your API key…" autocomplete="new-password">
+    </div>
+
+    <div class="form-group">
+      <label for="settings-model">Model</label>
+      <select class="form-control" id="settings-model"></select>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">Podcast Voices (edge-tts)</p>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="settings-voice-h1">Host 1 — Alex</label>
+        <select class="form-control" id="settings-voice-h1">
+          <option value="en-US-GuyNeural">en-US-GuyNeural</option>
+          <option value="en-US-ChristopherNeural">en-US-ChristopherNeural</option>
+          <option value="en-US-EricNeural">en-US-EricNeural</option>
+          <option value="en-GB-RyanNeural">en-GB-RyanNeural</option>
+          <option value="en-AU-WilliamNeural">en-AU-WilliamNeural</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="settings-voice-h2">Host 2 — Sam</label>
+        <select class="form-control" id="settings-voice-h2">
+          <option value="en-US-JennyNeural">en-US-JennyNeural</option>
+          <option value="en-US-AriaNeural">en-US-AriaNeural</option>
+          <option value="en-US-SaraNeural">en-US-SaraNeural</option>
+          <option value="en-GB-SoniaNeural">en-GB-SoniaNeural</option>
+          <option value="en-AU-NatashaNeural">en-AU-NatashaNeural</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeSettings()">Cancel</button>
+      <button class="btn-primary" id="save-settings-btn" onclick="saveSettings()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── URL Import Dialog ─────────────────────────────────────────────────── -->
+<div class="modal hidden" id="url-dialog">
+  <div class="modal-content modal-sm">
+    <h2>🌐 Import from URL</h2>
+    <div class="form-group">
+      <label for="url-input">Web page URL</label>
+      <input type="url" class="form-control" id="url-input"
+             placeholder="https://example.com/article">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeUrlDialog()">Cancel</button>
+      <button class="btn-primary" id="url-import-btn" onclick="importUrl()">Import</button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/app.js"></script>
+</body>
+</html>
