@@ -26,6 +26,17 @@ android {
     namespace = "ai.kerollosmakary.chatterboxwrapper"
     compileSdk = 35
 
+    signingConfigs {
+        create("release") {
+            if (hasReleaseSigning) {
+                storeFile = file(releaseKeystorePath!!)
+                storePassword = releaseKeystorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+            }
+        }
+    }
+
     defaultConfig {
         applicationId = "ai.kerollosmakary.chatterboxwrapper"
         minSdk = 26
@@ -81,13 +92,3 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.10.1")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 }
-    signingConfigs {
-        create("release") {
-            if (hasReleaseSigning) {
-                storeFile = file(releaseKeystorePath!!)
-                storePassword = releaseKeystorePassword
-                keyAlias = releaseKeyAlias
-                keyPassword = releaseKeyPassword
-            }
-        }
-    }
