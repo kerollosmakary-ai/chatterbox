@@ -11,12 +11,13 @@ Built with FastAPI + vanilla JS.  Supports **Anthropic, OpenAI, Groq, and OpenRo
 ## Quick start
 
 ```bash
-cd studio
 pip install -r requirements.txt
-python main.py
+python studio/main.py
 ```
 
 Then open **http://localhost:7860** in your browser.
+
+You can also run from inside the `studio` directory with `python main.py`.
 
 > **ffmpeg** is required for audio concatenation.  
 > Install it via `brew install ffmpeg` (macOS), `sudo apt install ffmpeg` (Linux), or from https://ffmpeg.org/download.html.

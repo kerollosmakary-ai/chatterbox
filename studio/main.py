@@ -16,8 +16,9 @@ from core.generators import ContentGenerator
 from core.llm import LLMClient
 from core.tts_engine import TTSEngine
 
-# ── Data directories ────────────────────────────────────────────────────────
-DATA_DIR   = Path("data")
+# ── Paths & data directories ────────────────────────────────────────────────
+BASE_DIR   = Path(__file__).resolve().parent
+DATA_DIR   = BASE_DIR / "data"
 UPLOADS    = DATA_DIR / "uploads"
 AUDIO_DIR  = DATA_DIR / "audio"
 
@@ -252,7 +253,7 @@ def _doc_label(t: str) -> str:
 
 
 # ── Static files (must come last) ────────────────────────────────────────────
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
+app.mount("/", StaticFiles(directory=str(BASE_DIR / "static"), html=True), name="static")
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=7860, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=7860, reload=True, app_dir=str(BASE_DIR))

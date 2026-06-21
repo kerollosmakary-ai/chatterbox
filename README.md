@@ -46,6 +46,19 @@ pip install -e .
 ```
 We developed and tested Chatterbox on Python 3.11 on Debian 11 OS; the versions of the dependencies are pinned in `pyproject.toml` to ensure consistency. You can modify the code or dependencies in this installation mode.
 
+## Notebook Studio
+
+This repository also includes **Notebook Studio**, a local NotebookLM-style document-to-summary/podcast app in `/studio`.
+
+Quick start:
+
+```shell
+pip install -r studio/requirements.txt
+python studio/main.py
+```
+
+Open `http://localhost:7860` and see `/studio/README.md` for full usage details.
+
 ## Usage
 
 ##### Chatterbox-Turbo
