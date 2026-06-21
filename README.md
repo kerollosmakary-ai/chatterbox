@@ -59,6 +59,19 @@ python studio/main.py
 
 Open `http://localhost:7860` and see `/studio/README.md` for full usage details.
 
+## Android WebView Wrapper
+
+An Android WebView shell for Notebook Studio is available at `/android-webview-wrapper`.
+
+Quick start:
+
+```shell
+cd android-webview-wrapper
+./gradlew assembleDebug
+```
+
+See `/android-webview-wrapper/README.md` for URL strategy (production vs LAN local), cleartext policy, signing, and release build steps.
+
 ## Usage
 
 ##### Chatterbox-Turbo
